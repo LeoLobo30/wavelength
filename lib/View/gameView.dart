@@ -18,7 +18,8 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
   bool showTarget = false;
   double playerGuess = 50; // Inicia no meio do slider (0-100)
 
-  double get rotationAngle => (playerGuess - 50) * (math.pi / 100); // Converte o valor do slider para ângulo
+  // Converte o valor do slider para ângulo
+  double get rotationAngle => (playerGuess - 50) * (math.pi / 100);
 
   @override
   void initState() {
@@ -88,6 +89,9 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
     Player clueGiver = widget.controller.currentClueGiver;
     Player guesser = widget.controller.currentGuesser;
 
+    // Converte o target para um ângulo para ser mostrado no semicírculo (-pi/2 a pi/2)
+    double targetAngle = (widget.controller.currentQuestion.target * math.pi) - (math.pi / 2);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Wavelength Game'),
@@ -109,21 +113,18 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
                     // Display Current Roles
                     Text(
                       '${clueGiver == Player.player1 ? 'Player 1' : 'Player 2'} is the Clue-Giver',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(height: 10),
                     Text(
                       '${guesser == Player.player1 ? 'Player 1' : 'Player 2'} is the Guesser',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                     ),
                     SizedBox(height: 30),
                     // Question Context
                     Text(
                       widget.controller.currentQuestion.context,
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: 20),
@@ -142,8 +143,7 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
                             onPressed: _toggleShowTarget,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blueAccent,
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 12),
+                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                             ),
                             child: Text(
                               showTarget ? 'Hide Target' : 'Show Target',
@@ -154,7 +154,7 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
                         ],
                       ),
                     SizedBox(height: 20),
-                    // Semicírculo com ponteiro rotacionável
+                    // Semicírculo com ponteiro rotacionável e marcador de target
                     Container(
                       width: double.infinity,
                       height: 110,
@@ -177,6 +177,20 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
                               height: 100,
                             ),
                           ),
+                          // Exibe o marcador de target no semicírculo quando showTarget é verdadeiro
+                          if (showTarget)
+                            Transform(
+                              alignment: Alignment.bottomCenter,
+                              transform: Matrix4.identity()..rotateZ(targetAngle),
+                              child: Container(
+                                width: 3,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  color: Colors.redAccent,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),
@@ -208,8 +222,7 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
                       onPressed: _submitGuess,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
                       child: Text(
                         'Submit Guess',
@@ -231,8 +244,7 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
                             ),
                             Text(
                               '${widget.controller.player1Score}',
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -244,8 +256,7 @@ class _GameViewState extends State<GameView> with SingleTickerProviderStateMixin
                             ),
                             Text(
                               '${widget.controller.player2Score}',
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                             ),
                           ],
                         ),
@@ -267,12 +278,9 @@ class SemiCirclePainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     canvas.drawArc(
-      Rect.fromCircle(
-        center: Offset(size.width / 2, size.height), // Centro no meio do semicírculo
-        radius: size.width / 2,
-      ),
-      math.pi, // Início no ponto de 180 graus (esquerda do semicírculo)
-      math.pi, // Varre 180 graus para formar o semicírculo
+      Rect.fromCircle(center: Offset(size.width / 2, size.height), radius: size.width / 2),
+      math.pi,
+      math.pi,
       true,
       paint,
     );

@@ -65,9 +65,9 @@ class GameController {
 
     // Adjust scoring thresholds based on the 0 to 100 range
     int points;
-    if (difference < 2) {
+    if (difference < 4) {
       points = 10; // Close guess: within 5 points
-    } else if (difference < 5) {
+    } else if (difference < 10) {
       points = 5; // Medium guess: within 10 points
     } else {
       points = 0; // Far or very far guess: more than 10 points
