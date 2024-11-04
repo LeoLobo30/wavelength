@@ -242,10 +242,10 @@
       "languageVersion": "3.5"
     }
   ],
-  "generated": "2024-11-03T18:42:59.814589Z",
+  "generated": "2024-11-04T02:37:10.348749Z",
   "generator": "pub",
-  "generatorVersion": "3.5.3",
+  "generatorVersion": "3.5.4",
   "flutterRoot": "file:///Users/leonardolobo/development/flutter",
-  "flutterVersion": "3.24.3",
+  "flutterVersion": "3.24.4",
   "pubCache": "file:///Users/leonardolobo/.pub-cache"
 }
