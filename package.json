@@ -1,0 +1,12 @@
+{
+  "name": "wavelength",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://LeoLobo30.github.io/wavelength",
+  "scripts": {
+    "deploy": "gh-pages -d build/web"
+  },
+  "devDependencies": {
+    "gh-pages": "^4.0.0"
+  }
+}
